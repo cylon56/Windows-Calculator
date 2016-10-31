@@ -2,12 +2,14 @@ import javax.swing.*;
 import java.awt.event.*;
 import java.awt.Dimension;
 import java.awt.BorderLayout;
+import java.lang.Math.*;
 
 public class MyCalcFrame extends JFrame implements ActionListener
 {
 
 	
 	private double lastNum;//last number entered into calculator
+	private String lastOp; //last operator entered in to calculator
 	
 	private int MAX_INPUT = 20; //max number of digits that can be entered at once
 	
@@ -198,6 +200,11 @@ public class MyCalcFrame extends JFrame implements ActionListener
 		else if(e.getSource() == Buttons[15])operatorProcess("sqrt");
 		else if(e.getSource() == Buttons[16])operatorProcess("%");
 		else if(e.getSource() == Buttons[17])operatorProcess("1/x");
+		else if(e.getSource() == Buttons[18]);
+		else if(e.getSource() == Buttons[19]);
+		else if(e.getSource() == Buttons[20])backspace();
+		else if(e.getSource() == Buttons[21])clearAll();
+		else if(e.getSource() == Buttons[22])clearCurrent();
 		
 		
 	}
@@ -266,16 +273,60 @@ public class MyCalcFrame extends JFrame implements ActionListener
 		}
 			
 	}
-	void operatorProcess(String s)//process /, *, -, +, √, %, 1/x
+	void operatorProcess(String s)//process /, *, -, +, sqrt, %, 1/x
 	{
-		if(currentStatus == INPUT_STATUS)
+		if(currentStatus != ERROR_STATUS)
 		{
-			if(s == "+")
+			double currentNum = getOutputNum();
+			if(s == "+" || s == "-" || s == "*" || s=="/")
 			{
-				
+				lastNum = currentNum;
+				clearedNext = true;
+				lastOp = s;
+			}
+			else if(s=="sqrt")
+			{
+				processResult(Math.sqrt(currentNum));			
+			}
+			else if (s =="%")
+			{
+				setOutputNum(currentNum/100);
 			}
 		}
 	}
 	
+	void processResult(double result)
+	{
+		setOutputNum(result);
+		lastNum = result;
+		currentStatus = RESULT_STATUS;
+		clearedNext = true;
+	}
+	
+	void clearAll()
+	{
+		setOutput("0");
+		lastNum = 0;
+		lastOp = "0";
+		currentStatus = INPUT_STATUS;
+		clearedNext = true;
+		
+	}
+	void clearCurrent()
+	{
+		setOutput("0");
+		currentStatus = INPUT_STATUS;
+		clearedNext = true;
+		
+	}
+	
+	void backspace()
+	{
+		String output = getOutput();
+		output = output.substring(0, output.length()-1);//removes first digit
+		System.out.println(output);
+		setOutput(output);
+		
+	}
 	
 }
