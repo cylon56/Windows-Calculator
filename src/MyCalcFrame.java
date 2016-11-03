@@ -9,7 +9,7 @@ public class MyCalcFrame extends JFrame implements ActionListener
 
 	
 	private double lastNum;//last number entered into calculator
-	private String lastOp; //last operator entered in to calculator
+	private String lastOp = "0"; //last operator entered in to calculator
 	
 	private int MAX_INPUT = 20; //max number of digits that can be entered at once
 	
@@ -200,7 +200,7 @@ public class MyCalcFrame extends JFrame implements ActionListener
 		else if(e.getSource() == Buttons[15])operatorProcess("sqrt");
 		else if(e.getSource() == Buttons[16])operatorProcess("%");
 		else if(e.getSource() == Buttons[17])operatorProcess("1/x");
-		else if(e.getSource() == Buttons[18]);
+		else if(e.getSource() == Buttons[18])processEquals();
 		else if(e.getSource() == Buttons[19]);
 		else if(e.getSource() == Buttons[20])backspace();
 		else if(e.getSource() == Buttons[21])clearAll();
@@ -292,6 +292,47 @@ public class MyCalcFrame extends JFrame implements ActionListener
 			{
 				setOutputNum(currentNum/100);
 			}
+		}
+	}
+	
+	void processEquals()
+	{
+		if(currentStatus != ERROR_STATUS && lastOp != "0")
+		{
+			double result;
+			double currentNum = getOutputNum();
+			
+			if(lastOp == "+")
+			{
+				result = lastNum + currentNum; 
+				processResult(result);
+			}
+			else if(lastOp == "-")
+			{
+				result = lastNum - currentNum; 
+				processResult(result);
+			}
+			else if(lastOp == "*")
+			{
+				result = lastNum * currentNum; 
+				processResult(result);
+			}
+			else if(lastOp == "/")
+			{
+				if(currentNum == 0)//for divide by zero error
+				{
+					currentStatus = ERROR_STATUS;
+					setOutput("cannot divide by zero");
+					clearedNext = true;
+					lastNum = 0;
+				}
+				else 
+				{
+					result = lastNum / currentNum; 
+					processResult(result);
+				}
+			}
+			lastOp = "0";
 		}
 	}
 	
