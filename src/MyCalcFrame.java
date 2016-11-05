@@ -1,13 +1,14 @@
 import javax.swing.*;
 import java.awt.event.*;
 import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.MenuBar;
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.lang.Math.*;
 
-public class MyCalcFrame extends JFrame implements ActionListener
+public class MyCalcFrame extends JFrame implements ActionListener, MouseListener
 {
-
-	
 	private double lastNum;//last number entered into calculator
 	private String lastOp = "0"; //last operator entered in to calculator
 	
@@ -33,11 +34,13 @@ public class MyCalcFrame extends JFrame implements ActionListener
 		numPanel = new JPanel();
 		add(outPanel, BorderLayout.NORTH);
 		
+		
 		//OutPut field
 		outputField = new JTextArea("0", 1, 1);
+		outputField.setFont(new Font("Courier New", Font.ITALIC, 18));
 		outputField.setEditable(false);
 		outputField.setOpaque(true);
-
+		
 		outPanel.add(outputField, BorderLayout.EAST);
 		
 		//setup Buttons
@@ -208,11 +211,13 @@ public class MyCalcFrame extends JFrame implements ActionListener
 		
 		
 	}
+
 	
-	String getOutput()//returns number in output text field
+	public String getOutput()//returns number in output text field
 	{
 		return outputField.getText();
 	}
+	
 	
 	double getOutputNum()//returns number in output text field
 	{
@@ -292,6 +297,18 @@ public class MyCalcFrame extends JFrame implements ActionListener
 			{
 				setOutputNum(currentNum/100);
 			}
+			else if (s =="1/x")
+			{
+				if(currentNum == 0)//for divide by zero error
+				{
+					currentStatus = ERROR_STATUS;
+					setOutput("cannot divide by zero");
+					clearedNext = true;
+					lastNum = 0;
+				}
+				else setOutputNum(1/currentNum);
+				
+			}
 		}
 	}
 	
@@ -336,6 +353,7 @@ public class MyCalcFrame extends JFrame implements ActionListener
 		}
 	}
 	
+	
 	void processResult(double result)
 	{
 		setOutputNum(result);
@@ -367,6 +385,41 @@ public class MyCalcFrame extends JFrame implements ActionListener
 		output = output.substring(0, output.length()-1);//removes first digit
 		System.out.println(output);
 		setOutput(output);
+		
+	}
+	
+	public void setDisplayHidden()
+	{
+		
+	}
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+		// TODO Auto-generated method stub
 		
 	}
 	
