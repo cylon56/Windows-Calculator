@@ -2,6 +2,7 @@ import javax.swing.*;
 import java.awt.event.*;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.GridLayout;
 import java.awt.MenuBar;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -10,9 +11,11 @@ import java.lang.Math.*;
 public class MyCalcFrame extends JFrame implements ActionListener, MouseListener
 {
 	private double lastNum;//last number entered into calculator
+	private double decNum;//Dec equivalent of current num in output used for conversion
 	private String lastOp = "0"; //last operator entered in to calculator
+	private String binary[];//holds binary values
 	
-	private int MAX_INPUT = 20; //max number of digits that can be entered at once
+	private int MAX_INPUT = 16; //max number of digits that can be entered at once
 	
 	//use currentStatus to determine the output's status
 	private int ERROR_STATUS = 2;
@@ -21,18 +24,30 @@ public class MyCalcFrame extends JFrame implements ActionListener, MouseListener
 	private int currentStatus;
 	 
 	private JButton Buttons[];//array to store buttons
+	private JRadioButton radioB[];//array to store radio buttons
 
 	private boolean clearedNext; //the current output field will be cleared for the next operation if true
 	
-	private JPanel outPanel, numPanel;
+	private JPanel outPanel, outputPanel, binaryPanel, numPanel, radioPanel, radioPanel1, radioPanel2;
 	private JTextArea outputField;
+	private JLabel binaryField[];
 	
 	public MyCalcFrame()
 	{
 		System.out.println("MyCalc created");
 		outPanel = new JPanel();
+		outPanel.setSize(600, 80);
+		outputPanel = new JPanel();
 		numPanel = new JPanel();
+		binaryPanel = new JPanel();
+		binaryPanel.setSize(600, 80);
+		radioPanel = new JPanel();
+		radioPanel1 = new JPanel();
+		radioPanel2 = new JPanel();
 		add(outPanel, BorderLayout.NORTH);
+		add(binaryPanel);
+		
+		binary = new String[16];//declare binary string array
 		
 		
 		//OutPut field
@@ -41,7 +56,23 @@ public class MyCalcFrame extends JFrame implements ActionListener, MouseListener
 		outputField.setEditable(false);
 		outputField.setOpaque(true);
 		
-		outPanel.add(outputField, BorderLayout.EAST);
+		outputPanel.add(outputField, BorderLayout.NORTH);
+		
+		
+		
+		//binary field
+		binaryField = new JLabel[16];
+		
+		for(int i = 0; i < 16; i++)
+		{
+			binaryField[i] = new JLabel("0000");
+			binaryField[i].setFont(new Font("Courier New", Font.ITALIC, 12));
+			binaryField[i].setOpaque(true);
+			binaryField[i].setSize(1, 4);
+			//binaryPanel.add(binaryField[i], BorderLayout.AFTER_LAST_LINE);
+		}
+	
+
 		
 		//setup Buttons
 		Buttons = new JButton[28];		
@@ -78,20 +109,40 @@ public class MyCalcFrame extends JFrame implements ActionListener, MouseListener
 		
 		//setup numPanel for the numpanel buttons
 		add(numPanel, BorderLayout.EAST);
-		/*numPanel.add(addButton, BorderLayout.NORTH);
-		numPanel.add(subButton, BorderLayout.SOUTH);
-		numPanel.add(mulButton, BorderLayout.EAST);
-		numPanel.add(divButton, BorderLayout.WEST);*/
 		
-		//add panel3 to display results
 		
 		//use actionlistener on buttons to record button pushes
 		for(int i = 0; i < Buttons.length; i++)
 		{
 			Buttons[i].addActionListener(this);
+			Buttons[i].addMouseListener(this);
 		}
 		
-		//setup layout
+		//setup radio panel and radio buttons
+		radioB = new JRadioButton [8];
+		
+		radioB[0] = new JRadioButton("Hex");
+		radioB[1] = new JRadioButton("Dec");
+		radioB[2] = new JRadioButton("Oct");
+		radioB[3] = new JRadioButton("Bin");
+		radioB[4] = new JRadioButton("Qword");
+		radioB[5] = new JRadioButton("Dword");
+		radioB[6] = new JRadioButton("Word");
+		radioB[7] = new JRadioButton("Byte");
+		
+		ButtonGroup group1 = new ButtonGroup();
+		for(int i = 0; i < 4; i++)
+		{
+			group1.add(radioB[i]);
+		}
+		ButtonGroup group2 = new ButtonGroup();
+		for(int i = 4; i < 8; i++)
+		{
+			group2.add(radioB[i]);
+		}
+		
+		
+		//setup layout for numpanel
 		GroupLayout numLayout = new GroupLayout(numPanel);
 		numPanel.setLayout(numLayout);
 		
@@ -174,6 +225,138 @@ public class MyCalcFrame extends JFrame implements ActionListener, MouseListener
 					           .addComponent(Buttons[14]))
 				      
 				);
+				
+				
+				//setup layout for binaryPanel
+				GroupLayout binaryLayout = new GroupLayout(binaryPanel);
+				binaryPanel.setLayout(binaryLayout);
+				
+				binaryLayout.setAutoCreateGaps(true);
+				binaryLayout.setAutoCreateContainerGaps(true);
+				
+				
+				binaryLayout.setHorizontalGroup(
+						binaryLayout.createSequentialGroup()
+						  .addGroup(binaryLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+					    		  .addComponent(binaryField[15])
+					    		  .addComponent(binaryField[7]))
+					      .addGroup(binaryLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+					    		  .addComponent(binaryField[14])
+					    		  .addComponent(binaryField[6]))
+					      .addGroup(binaryLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+					    		  .addComponent(binaryField[13])
+					    		  .addComponent(binaryField[5]))
+					      .addGroup(binaryLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+					    		  .addComponent(binaryField[12])
+					    		  .addComponent(binaryField[4]))
+					      .addGroup(binaryLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+					    		  .addComponent(binaryField[11])
+					    		  .addComponent(binaryField[3]))
+					      .addGroup(binaryLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+					    		  .addComponent(binaryField[10])
+					    		  .addComponent(binaryField[2]))
+					      .addGroup(binaryLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+					    		  .addComponent(binaryField[9])
+					    		  .addComponent(binaryField[1]))
+					      .addGroup(binaryLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+					    		  .addComponent(binaryField[8])
+					    		  .addComponent(binaryField[0]))
+						  
+						      
+						);
+				binaryLayout.setVerticalGroup(
+						binaryLayout.createSequentialGroup()
+						.addGroup(binaryLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+					    		  .addComponent(binaryField[15])
+					    		  .addComponent(binaryField[14])
+					    		  .addComponent(binaryField[13])
+					    		  .addComponent(binaryField[12])
+					    		  .addComponent(binaryField[11])
+					    		  .addComponent(binaryField[10])
+					    		  .addComponent(binaryField[9])
+					    		  .addComponent(binaryField[8]))
+						.addGroup(binaryLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+								  .addComponent(binaryField[7])
+					    		  .addComponent(binaryField[6])
+					    		  .addComponent(binaryField[5])
+					    		  .addComponent(binaryField[4])
+								  .addComponent(binaryField[3])
+					    		  .addComponent(binaryField[2])
+					    		  .addComponent(binaryField[1])
+					    		  .addComponent(binaryField[0]))
+						      
+						);		
+				
+				
+
+		
+				GroupLayout parentRadioLayout = new GroupLayout(radioPanel);
+				binaryPanel.setLayout(binaryLayout);
+				
+				parentRadioLayout.setAutoCreateGaps(true);
+				parentRadioLayout.setAutoCreateContainerGaps(true);
+				
+				
+				parentRadioLayout.setHorizontalGroup(
+						parentRadioLayout.createSequentialGroup()
+						.addGroup(parentRadioLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+								.addComponent(radioPanel1)
+					    		.addComponent(radioPanel2))
+					    		  .addComponent(radioPanel1)
+					    		  .addComponent(radioPanel2)
+						  
+						      
+						);
+				parentRadioLayout.setVerticalGroup(
+						parentRadioLayout.createSequentialGroup()
+						.addComponent(radioPanel1)
+			    		  .addComponent(radioPanel2)
+						      
+						);		
+				
+				
+		add(radioPanel, BorderLayout.WEST);
+		radioPanel.setLayout(parentRadioLayout);
+		
+		
+		//setup layout for radioPanel	
+		GridLayout radioLayout = new GridLayout(4,1);
+		radioPanel1.setLayout(radioLayout);
+		radioPanel1.setBorder(BorderFactory.createLineBorder(Color.black)); 
+		radioPanel.add(radioPanel1);
+		
+		for(int i = 0; i < 4; i++)
+		{
+			radioPanel1.add(radioB[i]);
+			radioB[i].addActionListener(this);
+		}
+		
+		radioB[1].setSelected(true);
+		
+		radioPanel2.setLayout(radioLayout);
+		radioPanel2.setBorder(BorderFactory.createLineBorder(Color.black)); 
+		radioPanel.add(radioPanel2);
+				
+		
+		for(int i = 4; i < 8; i++)
+		{
+			radioPanel2.add(radioB[i]);
+			radioB[i].setEnabled(false);
+		}
+		
+		radioB[4].setSelected(true);
+		radioB[5].setEnabled(false);
+		radioB[6].setEnabled(false);
+		radioB[7].setEnabled(false);
+		
+		//setouputPanel layout
+		GridLayout outputLayout = new GridLayout(2, 1);
+		outPanel.setLayout(outputLayout);
+		
+		
+		outPanel.add(outputPanel);
+		outPanel.add(binaryPanel);
+
 		
 	}
 
@@ -195,7 +378,6 @@ public class MyCalcFrame extends JFrame implements ActionListener, MouseListener
 		
 		//actions for operator buttons
 		else if(e.getSource() == Buttons[10])changeSign();
-		
 		else if(e.getSource() == Buttons[11])operatorProcess("/");
 		else if(e.getSource() == Buttons[12])operatorProcess("*");
 		else if(e.getSource() == Buttons[13])operatorProcess("-");
@@ -210,8 +392,92 @@ public class MyCalcFrame extends JFrame implements ActionListener, MouseListener
 		else if(e.getSource() == Buttons[22])clearCurrent();
 		
 		
+		if(currentStatus != ERROR_STATUS)
+		{
+			//changes binary output
+			binaryCalculate();
+			
+			if(e.getSource() != radioB[0] && e.getSource() != radioB[1] && e.getSource() != radioB[2] && e.getSource() 
+					!= radioB[3])
+			{
+				decNum = getOutputNum(); 
+			}
+			else convertOutput(e);
+		}
+		
 	}
 
+	public void convertOutput(ActionEvent e)
+	{
+		double output = getOutputNum();
+		if(e.getSource() == radioB[1])
+		{
+			setOutputNum(decNum);
+			for(int i =0; i < 28; i++)
+			{
+				Buttons[i].setEnabled(true);
+			}
+		}
+		else if(e.getSource() == radioB[0] || e.getSource() == radioB[2] || e.getSource() == radioB[3])
+		{
+			if(e.getSource() == radioB[0])setOutput(Double.toHexString(decNum));
+			else if(e.getSource() == radioB[2])setOutput(Integer.toOctalString((int) decNum));
+			else if(e.getSource() == radioB[3])setOutput(Integer.toBinaryString((int) decNum));
+			
+			
+			for(int i =0; i < 28; i++)
+			{
+				Buttons[i].setEnabled(false);
+			}
+		}
+	}
+	
+	public void binaryCalculate()
+	{
+		
+			String fullBinaryNum = Integer.toBinaryString((int) getOutputNum());
+			
+			System.out.println(fullBinaryNum);
+			
+			for(int k = 0; k < 16; k++)
+			{
+				//if this binary chunk will fully fill the array slot
+				if((k+1)*4 <= fullBinaryNum.length())
+				{
+					binary[k] = fullBinaryNum.substring(fullBinaryNum.length()-(k+1)*4, fullBinaryNum.length()-k*4);
+				}
+				//if the binary chunk will only partially fill the array
+				else if(fullBinaryNum.length() > k*4  && fullBinaryNum.length() < (k+1)*4)
+				{
+					binary[k] = fullBinaryNum.substring(0, fullBinaryNum.length()-k*4);
+					for(int i = 0; i < (k+1)*4 - fullBinaryNum.length(); i++)
+					{
+						binary[k] = "0"+ binary[k];
+					}
+				}
+				else
+				{
+					binary[k] = "0000";
+				}
+	
+			}
+			
+			for(int i = 0; i < 16; i ++)
+			{
+				binaryField[i].setText(binary[i]);
+			}
+		
+	}
+	
+	
+	public void setView(boolean state)
+	{
+		outPanel.setVisible(state);
+		numPanel.setVisible(state);
+		radioPanel1.setVisible(state);
+		radioPanel2.setVisible(state);
+		
+	}
 	
 	public String getOutput()//returns number in output text field
 	{
@@ -278,7 +544,9 @@ public class MyCalcFrame extends JFrame implements ActionListener, MouseListener
 		}
 			
 	}
-	void operatorProcess(String s)//process /, *, -, +, sqrt, %, 1/x
+	
+	
+	void operatorProcess(String s)//process /, *, -, +, sqrt, %, 1/x, .
 	{
 		if(currentStatus != ERROR_STATUS)
 		{
@@ -308,6 +576,13 @@ public class MyCalcFrame extends JFrame implements ActionListener, MouseListener
 				}
 				else setOutputNum(1/currentNum);
 				
+			}
+			else if(s == ".")
+			{
+				if(currentNum % 1 == 0)//checks if dot is already present
+				{
+					setOutput(getOutput() + ".");
+				}
 			}
 		}
 	}
@@ -382,16 +657,15 @@ public class MyCalcFrame extends JFrame implements ActionListener, MouseListener
 	void backspace()
 	{
 		String output = getOutput();
+		if(output.length() > 1)
+		{
 		output = output.substring(0, output.length()-1);//removes first digit
-		System.out.println(output);
+		}
+		else output= "0";
 		setOutput(output);
 		
 	}
 	
-	public void setDisplayHidden()
-	{
-		
-	}
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
@@ -413,13 +687,30 @@ public class MyCalcFrame extends JFrame implements ActionListener, MouseListener
 
 	@Override
 	public void mouseEntered(MouseEvent e) {
-		// TODO Auto-generated method stub
+		for(int i = 0; i < Buttons.length; i++)
+		{
+			if(e.getSource() == Buttons[i])
+			{
+				Buttons[i].setBackground(Color.YELLOW);
+				return;
+			}
+			
+		}
 		
 	}
 
 	@Override
-	public void mouseExited(MouseEvent e) {
-		// TODO Auto-generated method stub
+	public void mouseExited(MouseEvent e) 
+	{
+		for(int i = 0; i < Buttons.length; i++)
+		{
+			if(e.getSource() == Buttons[i])
+			{
+				Buttons[i].setBackground(UIManager.getColor("control"));
+				return;
+			}
+			
+		}
 		
 	}
 	

@@ -9,7 +9,7 @@ public class TestMyCalc
 		MyCalcMenu menu = new MyCalcMenu(calc);
 		System.out.println("testing");
 
-		calc.setSize(500, 300);
+		calc.setSize(500, 400);
 		calc.setVisible(true);
 		calc.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		calc.setTitle("Calculator");
